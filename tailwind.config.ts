@@ -52,6 +52,7 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        description: "rgb(75 88 124/1)"
       },
       borderRadius: {
         lg: "var(--radius)",

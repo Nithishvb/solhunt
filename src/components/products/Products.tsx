@@ -1,4 +1,14 @@
 import ProductCards from "./ProductCards";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import ProductModal from "./ProductModal";
 
 const data = [
   {
@@ -8,25 +18,30 @@ const data = [
     commentsCount: 20,
     description: "A powerful SaaS platform for your business needs.",
     label: ["storage", "web 3"],
-    imageUrl:
-      "",
+    imageUrl: "",
   },
-  
 ];
 
 const Products = () => {
   return (
     <div>
       {data.map((pro) => (
-        <ProductCards
-          key={pro.id}
-          name={pro.name}
-          description={pro.description}
-          labels={pro.label}
-          commentCount={pro.commentsCount}
-          imageUrl={pro.imageUrl}
-          votes={pro.votes}
-        />
+        <Dialog key={pro.id}>
+          <DialogTrigger asChild>
+            <ProductCards
+              key={pro.id}
+              name={pro.name}
+              description={pro.description}
+              labels={pro.label}
+              commentCount={pro.commentsCount}
+              imageUrl={pro.imageUrl}
+              votes={pro.votes}
+            />
+          </DialogTrigger>
+          <DialogContent className="max-w-[60%]">
+            <ProductModal />
+          </DialogContent>
+        </Dialog>
       ))}
     </div>
   );
