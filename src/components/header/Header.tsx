@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import {
@@ -9,8 +11,29 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useAppContext } from "@/context/context";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { useEffect } from "react";
 
 export default function Header() {
+  const { state, dispatch } = useAppContext();
+  const { publicKey, connected , disconnect } = useWallet();
+
+  useEffect(() => {
+    if (connected && publicKey) {
+      dispatch({
+        type: "ADD_USER",
+        payload: {
+          userData: {
+            id: state.userAccount.length + 1,
+            publicKey: publicKey.toBase58(),
+          },
+        },
+      });
+    }
+  }, [connected, publicKey]);
+
   return (
     <header className="flex items-center justify-between h-16 px-4 bg-background border-b md:px-6">
       <Link
@@ -28,38 +51,65 @@ export default function Header() {
           className="w-full pl-10 pr-4 py-2 rounded-md bg-muted text-foreground"
         />
       </div>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="rounded-full">
-            <Avatar className="h-10 w-10">
-              <AvatarImage src="/placeholder-user.jpg" alt="Avatar" />
-              <AvatarFallback>JD</AvatarFallback>
-            </Avatar>
-            <span className="sr-only">Toggle user menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem>
-            <Link href="#" className="flex items-center gap-2" prefetch={false}>
-              <div className="w-4 h-4" />
-              <span>Profile</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link href="#" className="flex items-center gap-2" prefetch={false}>
-              <div className="w-4 h-4" />
-              <span>Settings</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <Link href="#" className="flex items-center gap-2" prefetch={false}>
-              <div className="w-4 h-4" />
-              <span>Logout</span>
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {state.userAccount.length === 0 ? (
+        <div>
+          <WalletMultiButton className="shadow-[0_4px_14px_0_rgb(0,118,255,39%)] hover:shadow-[0_6px_20px_rgba(0,118,255,23%)] hover:bg-[rgba(0,118,255,0.9)] px-4 py-2 bg-[#0070f3] rounded-md text-white font-light transition duration-200 ease-linear text-sm" />
+        </div>
+      ) : (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <Avatar className="h-10 w-10">
+                <AvatarImage src="/placeholder-user.jpg" alt="Avatar" />
+                <AvatarFallback>JD</AvatarFallback>
+              </Avatar>
+              <span className="sr-only">Toggle user menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>
+              <Link
+                href="#"
+                className="flex items-center gap-2"
+                prefetch={false}
+              >
+                <div className="w-4 h-4" />
+                <span>Profile</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link
+                href="#"
+                className="flex items-center gap-2"
+                prefetch={false}
+              >
+                <div className="w-4 h-4" />
+                <span>List product</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Link
+                href="#"
+                className="flex items-center gap-2"
+                prefetch={false}
+                onClick={async () => {
+                  await disconnect();
+                  dispatch({
+                    type: "REMOVE_USER",
+                    payload: {
+                      id: publicKey?.toBase58()
+                    }
+                  })
+                }}
+              >
+                <div className="w-4 h-4" />
+                <span>Logout</span>
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
     </header>
   );
 }
