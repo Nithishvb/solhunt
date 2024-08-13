@@ -19,6 +19,7 @@ import { useEffect } from "react";
 export default function Header() {
   const { state, dispatch } = useAppContext();
   const { publicKey, connected , disconnect } = useWallet();
+  const storedPublicKey = window.localStorage.getItem("Public_key");
 
   useEffect(() => {
     if (connected && publicKey) {
@@ -31,6 +32,7 @@ export default function Header() {
           },
         },
       });
+      localStorage.setItem("Public_key", JSON.stringify(publicKey.toBase58()));
     }
   }, [connected, publicKey]);
 
@@ -51,7 +53,7 @@ export default function Header() {
           className="w-full pl-10 pr-4 py-2 rounded-md bg-muted text-foreground"
         />
       </div>
-      {state.userAccount.length === 0 ? (
+      {storedPublicKey == null || storedPublicKey == "" ? (
         <div>
           <WalletMultiButton className="shadow-[0_4px_14px_0_rgb(0,118,255,39%)] hover:shadow-[0_6px_20px_rgba(0,118,255,23%)] hover:bg-[rgba(0,118,255,0.9)] px-4 py-2 bg-[#0070f3] rounded-md text-white font-light transition duration-200 ease-linear text-sm" />
         </div>
@@ -73,18 +75,18 @@ export default function Header() {
                 className="flex items-center gap-2"
                 prefetch={false}
               >
-                <div className="w-4 h-4" />
+                <div className="w-2 h-2" />
                 <span>Profile</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Link
-                href="#"
+                href="/product"
                 className="flex items-center gap-2"
                 prefetch={false}
               >
-                <div className="w-4 h-4" />
-                <span>List product</span>
+                <div className="w-2 h-2" />
+                <span>My products</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -100,10 +102,11 @@ export default function Header() {
                     payload: {
                       id: publicKey?.toBase58()
                     }
-                  })
+                  });
+                  window.localStorage.removeItem("Public_key");
                 }}
               >
-                <div className="w-4 h-4" />
+                <div className="w-2 h-2" />
                 <span>Logout</span>
               </Link>
             </DropdownMenuItem>
