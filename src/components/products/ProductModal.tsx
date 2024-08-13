@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import ProductLabels from "./ProductLabels";
 
 const ProductModal = () => {
   return (
@@ -40,8 +41,37 @@ const ProductModal = () => {
         quibusdam consequuntur corporis totam placeat, iste ab quis ad natus
         esse eveniet.
       </div>
+      <div className="flex items-center justify-between">
+        <ProductLabels />
+        <div className="flex items-center gap-1 cursor-pointer">
+          <IconShare />
+          <span className="text-sm">Share</span>
+        </div>
+      </div>
     </div>
   );
 };
 
 export default ProductModal;
+
+function IconShare(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 21 21"
+      fill="currentColor"
+      height="25px"
+      width="25px"
+      {...props}
+    >
+      <g
+        fill="none"
+        fillRule="evenodd"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M12.5 4.5l-1.978-2-2.022 2M10.5 2.5v9M7.5 6.5h-1a2 2 0 00-2 2v7a2 2 0 002 2h8a2 2 0 002-2v-7a2 2 0 00-2-2h-1" />
+      </g>
+    </svg>
+  );
+}
