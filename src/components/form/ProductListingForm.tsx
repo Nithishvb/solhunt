@@ -2,7 +2,6 @@ import React from "react";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,6 +21,8 @@ import { Calendar } from "../ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import LabelSelect from "../LabelSelect/LabelSelect";
+import ImageUpload from "../ImageUpload/ImageUpload";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -54,7 +55,7 @@ const ProductListingForm = () => {
             <FormItem>
               <FormLabel>Product name</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="Enter a product name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -67,7 +68,7 @@ const ProductListingForm = () => {
             <FormItem>
               <FormLabel>Short Description</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="Enter a short description" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -80,7 +81,7 @@ const ProductListingForm = () => {
             <FormItem>
               <FormLabel>Long Description</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="Enter a long description" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -98,7 +99,7 @@ const ProductListingForm = () => {
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
+                        "w-[100%] pl-3 text-left font-normal",
                         !field.value && "text-muted-foreground"
                       )}
                     >
@@ -122,6 +123,32 @@ const ProductListingForm = () => {
                   />
                 </PopoverContent>
               </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Category</FormLabel>
+              <FormControl>
+                <LabelSelect />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Upload logo</FormLabel>
+              <FormControl>
+                <ImageUpload />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
