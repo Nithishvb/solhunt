@@ -15,7 +15,7 @@ const ImageUpload = React.forwardRef<HTMLImageElement, ImageProps>(
       const file = event.target.files[0];
       if (file) {
         const imageUrl: string = URL.createObjectURL(file);
-        props?.onChange(file);
+        // props?.onChange(file);
         setImage(imageUrl);
       }
     };

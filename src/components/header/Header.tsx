@@ -15,11 +15,14 @@ import { useAppContext } from "@/context/context";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+// import { useRouter } from "next/router";
 
 export default function Header() {
   const { state, dispatch } = useAppContext();
   const { publicKey, connected , disconnect } = useWallet();
   const storedPublicKey = window.localStorage.getItem("Public_key");
+  const router = useRouter();
 
   useEffect(() => {
     if (connected && publicKey) {
@@ -104,6 +107,7 @@ export default function Header() {
                     }
                   });
                   window.localStorage.removeItem("Public_key");
+                  router.push("/");
                 }}
               >
                 <div className="w-2 h-2" />
