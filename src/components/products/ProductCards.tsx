@@ -18,7 +18,7 @@ export default function ProductCards({
   imageUrl,
 }: ProductCardsPropType) {
   return (
-    <div className="flex items-center justify-between gap-4 p-4 bg-background rounded-lg shadow-sm w-[60%] cursor-pointer">
+    <div className="flex items-center justify-between gap-4 p-4 bg-background rounded-lg shadow-sm w-[100%] cursor-pointer">
       <div className="flex items-center">
         <div className="flex-shrink-0 rounded-full overflow-hidden">
           <Image

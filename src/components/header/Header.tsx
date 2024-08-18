@@ -36,13 +36,15 @@ export default function Header() {
         },
       });
       localStorage.setItem("Public_key", JSON.stringify(publicKey.toBase58()));
+    }else{
+      localStorage.removeItem("Public_key");
     }
   }, [connected, publicKey]);
 
   return (
     <header className="flex items-center justify-between h-16 px-4 bg-background border-b md:px-6">
       <Link
-        href="#"
+        href="/"
         className="flex items-center gap-2 text-lg font-semibold"
         prefetch={false}
       >
@@ -56,7 +58,7 @@ export default function Header() {
           className="w-full pl-10 pr-4 py-2 rounded-md bg-muted text-foreground"
         />
       </div>
-      {storedPublicKey == null || storedPublicKey == "" ? (
+      {!connected ? ( //storedPublicKey == null || storedPublicKey == ""
         <div>
           <WalletMultiButton className="shadow-[0_4px_14px_0_rgb(0,118,255,39%)] hover:shadow-[0_6px_20px_rgba(0,118,255,23%)] hover:bg-[rgba(0,118,255,0.9)] px-4 py-2 bg-[#0070f3] rounded-md text-white font-light transition duration-200 ease-linear text-sm" />
         </div>
@@ -74,7 +76,7 @@ export default function Header() {
           <DropdownMenuContent align="end">
             <DropdownMenuItem>
               <Link
-                href="#"
+                href="/profile"
                 className="flex items-center gap-2"
                 prefetch={false}
               >
@@ -84,7 +86,7 @@ export default function Header() {
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Link
-                href="/product"
+                href="/product/all"
                 className="flex items-center gap-2"
                 prefetch={false}
               >

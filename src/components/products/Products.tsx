@@ -16,6 +16,15 @@ const data = [
     label: ["storage", "web 3"],
     imageUrl: "",
   },
+  {
+    id: 2,
+    name: "Sol hunt",
+    votes: 2,
+    commentsCount: 20,
+    description: "A powerful SaaS platform for your business needs.",
+    label: ["storage", "web 3"],
+    imageUrl: "",
+  },
 ];
 
 const Products = () => {
