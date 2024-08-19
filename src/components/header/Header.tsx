@@ -16,30 +16,54 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-// import { useRouter } from "next/router";
+import axios from "axios";
 
 export default function Header() {
   const { state, dispatch } = useAppContext();
-  const { publicKey, connected , disconnect } = useWallet();
+  const { publicKey, connected, disconnect, connect } = useWallet();
   const storedPublicKey = window.localStorage.getItem("Public_key");
   const router = useRouter();
 
   useEffect(() => {
     if (connected && publicKey) {
+      const public_address = publicKey.toBase58();
+      localStorage.setItem("Public_key", JSON.stringify(public_address));
+      createUser(public_address);
+    }
+  }, [connected, publicKey]);
+
+  useEffect(() => {
+    const storedWalletAddress = JSON.parse(localStorage.getItem("Public_key") || '');
+    if (storedWalletAddress) {
+      console.log("Inside id effct");
+      // Automatically connect the wallet if the address is found
+      connect().catch((error) => {
+        console.error("Failed to connect wallet:", error);
+      });
+    }
+  }, []);
+
+  const createUser = async (publicKey: string) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_URL}/api/user/create`,
+        {
+          publicKey: publicKey,
+        }
+      );
       dispatch({
         type: "ADD_USER",
         payload: {
           userData: {
-            id: state.userAccount.length + 1,
-            publicKey: publicKey.toBase58(),
+            id: response.data.data.id,
+            publicKey,
           },
         },
       });
-      localStorage.setItem("Public_key", JSON.stringify(publicKey.toBase58()));
-    }else{
-      localStorage.removeItem("Public_key");
+    } catch (err: any) {
+      console.log("Error creating user", err?.message);
     }
-  }, [connected, publicKey]);
+  };
 
   return (
     <header className="flex items-center justify-between h-16 px-4 bg-background border-b md:px-6">
@@ -105,8 +129,8 @@ export default function Header() {
                   dispatch({
                     type: "REMOVE_USER",
                     payload: {
-                      id: publicKey?.toBase58()
-                    }
+                      id: publicKey?.toBase58(),
+                    },
                   });
                   window.localStorage.removeItem("Public_key");
                   router.push("/");
