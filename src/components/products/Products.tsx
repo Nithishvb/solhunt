@@ -1,53 +1,52 @@
-import ProductCards from "./ProductCards";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import ProductModal from "./ProductModal";
+"use client";
 
-const data = [
-  {
-    id: 1,
-    name: "Sol hunt",
-    votes: 2,
-    commentsCount: 20,
-    description: "A powerful SaaS platform for your business needs.",
-    label: ["storage", "web 3"],
-    imageUrl: "",
-  },
-  {
-    id: 2,
-    name: "Sol hunt",
-    votes: 2,
-    commentsCount: 20,
-    description: "A powerful SaaS platform for your business needs.",
-    label: ["storage", "web 3"],
-    imageUrl: "",
-  },
-];
+import ProductCards from "./ProductCards";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import ProductModal from "./ProductModal";
+import { useFetch } from "@/lib/hooks/useFetch";
+import { useState } from "react";
+import axios from "axios";
 
 const Products = () => {
+  const { data: Products } = useFetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/products`
+  );
+  const [selectedContent, setSelectedContent] = useState<any>();
+
+  const vote = async (data: any) => {
+    console.log(data);
+    try{
+      await axios.post("http://localhost:3000/api/vote/new", {
+        userId: data.userId,
+        productId: data.id
+      });
+    }catch(err: any){
+      console.log("Error casting vote", err.message)
+    }
+  }
+
   return (
     <div>
-      {data.map((pro) => (
-        <Dialog key={pro.id}>
-          <DialogTrigger asChild>
-            <ProductCards
-              key={pro.id}
-              name={pro.name}
-              description={pro.description}
-              labels={pro.label}
-              commentCount={pro.commentsCount}
-              imageUrl={pro.imageUrl}
-              votes={pro.votes}
-            />
-          </DialogTrigger>
-          <DialogContent className="max-w-[60%]">
-            <ProductModal />
-          </DialogContent>
-        </Dialog>
-      ))}
+      {Products &&
+        Products.data.map((pro: any) => (
+          <Dialog key={pro.id}>
+            <DialogTrigger asChild>
+              <div onClick={() => setSelectedContent(pro)}>
+                <ProductCards
+                  key={pro.id}
+                  name={pro.name}
+                  shortDescription={pro.shortDescription}
+                  labels={pro.category}
+                  imageUrl={pro.imageUrl}
+                  votes={pro.votes}
+                />
+              </div>
+            </DialogTrigger>
+            <DialogContent className="max-w-[60%]">
+              <ProductModal selectedContent={selectedContent} vote={vote} />
+            </DialogContent>
+          </Dialog>
+        ))}
     </div>
   );
 };

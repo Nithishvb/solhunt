@@ -3,26 +3,23 @@ import Image from "next/image";
 interface ProductCardsPropType {
   name: string;
   imageUrl: string;
-  commentCount: number;
   votes: number;
-  description: string;
+  shortDescription: string;
   labels: string[];
 }
 
 export default function ProductCards({
   name,
-  description,
-  commentCount,
+  shortDescription,
   votes,
   labels,
-  imageUrl,
 }: ProductCardsPropType) {
   return (
     <div className="flex items-center justify-between gap-4 p-4 bg-background rounded-lg shadow-sm w-[100%] cursor-pointer">
       <div className="flex items-center">
         <div className="flex-shrink-0 rounded-full overflow-hidden">
           <Image
-            src={imageUrl}
+            src={""}
             alt="Product Image"
             width={44}
             height={44}
@@ -34,15 +31,15 @@ export default function ProductCards({
           <h3 className="text-lg font-semibold">
             {name} -{" "}
             <span className="text-gray-400 text-sm font-medium">
-              {description}
+              {shortDescription}
             </span>
           </h3>
           <div className="pt-1 flex items-center gap-2">
-            <span className="text-xs">{commentCount}</span>
+            <span className="text-xs">{"2"}</span>
             <div className="flex items-center">
-              {labels.map((lab, index: number) => (
-                <p key={index} className="text-xs px-2 text-muted-foreground">{lab}</p>
-              ))}
+              {/* {labels.map((lab, index: number) => ( */}
+                <p  className="text-xs px-2 text-muted-foreground">{labels}</p>
+              {/* ))} */}
             </div>
           </div>
         </div>
