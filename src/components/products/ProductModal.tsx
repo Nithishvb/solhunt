@@ -1,8 +1,20 @@
 import Image from "next/image";
-import React from "react";
+import React, { useMemo } from "react";
 import ProductLabels from "./ProductLabels";
+import { useAppContext } from "@/context/context";
 
-const ProductModal = ({ selectedContent , vote }: any) => {
+const ProductModal = ({ selectedContent , vote , removeVote }: any) => {
+
+  const { state } = useAppContext();
+
+  const isVoted = useMemo(() => {
+    if(state.userAccount.length === 0){
+      return false;
+    }
+    const response = selectedContent.votes.filter((vote: any) => vote.userId == state.userAccount[0].id);
+    return response.length > 0;
+  }, [selectedContent, state.userAccount]);
+
   return (
     <div className="w-[100%] py-5 px-10">
       <div className="flex items-center justify-between">
@@ -28,7 +40,7 @@ const ProductModal = ({ selectedContent , vote }: any) => {
           <button className="px-6 py-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200">
             Visit
           </button>
-          <button onClick={() => vote(selectedContent)} className="px-8 py-2 bg-black text-white text-sm rounded-md font-semibold hover:bg-black/[0.8] hover:shadow-lg">
+          <button onClick={() => !isVoted ? vote(selectedContent) : removeVote(selectedContent.votes)} className={`px-8 py-2 bg-black text-white text-sm rounded-md font-semibold ${isVoted && 'bg-white border border-black !text-black'}`}>
             VOTE
           </button>
         </div>

@@ -19,7 +19,8 @@ model Product {
   listingdate      DateTime
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-  votes            Int      @default(0)
+  vote            Int      @default(0)
+  votes Vote[]
 
   user User @relation(fields: [userId], references: [id])
 }
@@ -28,4 +29,17 @@ model User {
   id        Int       @id @default(autoincrement())
   publicKey String    @unique
   products  Product[]
+  votes     Vote[]
+}
+
+model Vote {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId]) 
 }

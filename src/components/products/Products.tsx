@@ -6,22 +6,37 @@ import ProductModal from "./ProductModal";
 import { useFetch } from "@/lib/hooks/useFetch";
 import { useState } from "react";
 import axios from "axios";
+import { useAppContext } from "@/context/context";
 
 const Products = () => {
   const { data: Products } = useFetch(
     `${process.env.NEXT_PUBLIC_URL}/api/products`
   );
   const [selectedContent, setSelectedContent] = useState<any>();
+  const { state } = useAppContext();
 
   const vote = async (data: any) => {
-    console.log(data);
-    try{
-      await axios.post("http://localhost:3000/api/vote/new", {
+    try {
+      const response = await axios.post("http://localhost:3000/api/vote/new", {
         userId: data.userId,
-        productId: data.id
+        productId: data.id,
       });
-    }catch(err: any){
-      console.log("Error casting vote", err.message)
+      setSelectedContent(response.data.data);
+    } catch (err: any) {
+      console.log("Error casting vote", err.message);
+    }
+  };
+
+  const removeVote = async (voteData: any) => {
+    try {
+      const userVotedId = voteData.filter((vote: any) => vote.userId === state.userAccount[0].id)
+      const response = await axios.post("http://localhost:3000/api/vote/remove", {
+        voteId: userVotedId[0].id,
+        productId: selectedContent.id
+      });
+      setSelectedContent(response.data.data);
+    } catch (err: any) {
+      console.log("Error casting vote", err.message);
     }
   }
 
@@ -38,12 +53,12 @@ const Products = () => {
                   shortDescription={pro.shortDescription}
                   labels={pro.category}
                   imageUrl={pro.imageUrl}
-                  votes={pro.votes}
+                  votes={pro.vote}
                 />
               </div>
             </DialogTrigger>
             <DialogContent className="max-w-[60%]">
-              <ProductModal selectedContent={selectedContent} vote={vote} />
+              <ProductModal selectedContent={selectedContent} vote={vote} removeVote={removeVote} />
             </DialogContent>
           </Dialog>
         ))}
